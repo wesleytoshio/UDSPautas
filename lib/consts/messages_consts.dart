@@ -5,5 +5,5 @@ class MessagesConsts {
   static const emailInvalido = 'Esse email não é válido, tente novamente';
 
   static const senhaIncorreta = 'Senha incorreta, por favor tente novamente';
-  static const emailIncorreto = 'Email não cadastrado, por favor tente novamente';
+  static const emailIncorreto = 'Email não cadastrado, registre-se para continuar';
 }

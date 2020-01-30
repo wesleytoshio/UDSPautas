@@ -2,31 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:pautas_app/classes/data_base_create.dart';
 import 'package:pautas_app/classes/shared_preferences_app.dart';
 import 'package:pautas_app/store/controller_app.dart';
-import 'package:pautas_app/store/login_store.dart';
 import 'package:pautas_app/views/home_view.dart';
 import 'package:pautas_app/views/login_view.dart';
 import 'package:provider/provider.dart';
 
+import 'store/login_store.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferencesApp sharedPreferences = SharedPreferencesApp();
   await DatabaseCreate().initDatabase();
-  runApp(MyApp());
+  await sharedPreferences.loadSharedPreferences();
+  runApp(MyApp(sharedPreferences));
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  LoginStore loginStore;
-  @override
-  void initState() {
-    super.initState();
-    loginStore = LoginStore();
-    loginStore.loadPreferences();
-  }
-
+class MyApp extends StatelessWidget {
+  final SharedPreferencesApp _sharedPreferencesApp;
+  const MyApp(this._sharedPreferencesApp);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -34,16 +26,22 @@ class _MyAppState extends State<MyApp> {
         title: 'UDSPautas',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            primaryColor: ThemeData.dark().primaryColor,
-            primarySwatch: Colors.blue),
-        home: loginStore.idUsuLogado == 0 ? LoginView() : HomePageView(),
+          primarySwatch: Colors.blue,
+          primaryColor: Colors.white,
+        ),
+        home: _sharedPreferencesApp.getUsuarioLogado == 0
+            ? LoginView()
+            : HomePageView(),
       ),
       providers: [
         Provider<ControllerAppStore>(
           create: (_) => ControllerAppStore(),
         ),
+        Provider<LoginStore>(
+          create: (_) => LoginStore(_sharedPreferencesApp),
+        ),
         Provider<SharedPreferencesApp>(
-          create: (_) => SharedPreferencesApp(),
+          create: (_) => _sharedPreferencesApp,
         )
       ],
     );

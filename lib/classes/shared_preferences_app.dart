@@ -3,16 +3,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SharedPreferencesApp {
   SharedPreferences prefs;
 
-  loadSharedPreferences() async {
+  Future loadSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
   }
 
   setLembrarme(bool lembrarme, {String email, String senha}) async {
-    if (prefs != null) {
-      prefs.setBool('lembrarme', lembrarme);
-      prefs.setString('email', email.isNotEmpty && lembrarme ? email : '');
-      prefs.setString('senha', senha.isNotEmpty && lembrarme ? senha : '');
-    }
+    prefs.setBool('lembrarme', lembrarme);
+    prefs.setString('email', email.isNotEmpty && lembrarme ? email : '');
+    prefs.setString('senha', senha.isNotEmpty && lembrarme ? senha : '');
   }
 
   List<String> get getEmailSenhaLembrarme {
@@ -26,12 +24,10 @@ class SharedPreferencesApp {
   }
 
   bool get getLembrarme {
-    if (prefs != null) {
-      if (prefs.containsKey('lembrarme') == false) {
-        setLembrarme(false);
-      }
-      return prefs.getBool('lembrarme');
+    if (prefs.getBool('lembrarme') == null) {
+      setLembrarme(false);
     }
+    return prefs.getBool('lembrarme');
   }
 
   setUsuarioLogado(int id) {
@@ -39,12 +35,10 @@ class SharedPreferencesApp {
   }
 
   int get getUsuarioLogado {
-    if (prefs != null) {
-      if (prefs.containsKey('idUsuarioLogado') == false) {
-        setUsuarioLogado(0);
-      }
-      return prefs.getInt('idUsuarioLogado');
+    if (prefs.getInt('idUsuarioLogado') == null) {
+      setUsuarioLogado(0);
     }
+    return prefs.getInt('idUsuarioLogado');
   }
 
   clearUsuarioLogado() {

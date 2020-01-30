@@ -3,6 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pautas_app/consts/style_consts.dart';
 import 'package:pautas_app/store/login_store.dart';
+import 'package:provider/provider.dart';
+import 'package:toast/toast.dart';
+import '../store/login_store.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -10,18 +13,13 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  bool _rememberMe = false;
-  bool _eyeOff = true;
-
-  LoginStore loginStore;
-
   FocusNode myFocusNode;
+  TextEditingController controllerTextEmail = TextEditingController();
+  TextEditingController controllerTextSenha = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    loginStore = LoginStore();
-    loginStore.loadPreferences();
     myFocusNode = FocusNode();
   }
 
@@ -39,24 +37,22 @@ class _LoginViewState extends State<LoginView> {
         SizedBox(height: 10.0),
         Container(
           alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
+          //decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
+            controller: controllerTextEmail,
             onSubmitted: (texto) =>
                 FocusScope.of(context).requestFocus(myFocusNode),
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             style: TextStyle(
-              color: Colors.black87,
+              color: Colors.white,
               fontFamily: 'Google',
+              fontSize: 18,
             ),
             decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.mail,
-                color: Theme.of(context).primaryColor,
-              ),
+              //border: InputBorder.none,
+              //contentPadding: EdgeInsets.only(top: 14.0),
               hintText: 'Digite seu email',
               hintStyle: kHintTextStyle,
             ),
@@ -66,7 +62,7 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
-  Widget _buildPasswordTF() {
+  Widget _buildPasswordTF(LoginStore _loginStore) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -75,79 +71,112 @@ class _LoginViewState extends State<LoginView> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
-            focusNode: myFocusNode,
-            obscureText: _eyeOff,
-            style: TextStyle(
-              color: Colors.black87,
-              fontFamily: 'Google',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Observer(
-                builder: (BuildContext context) {
-                  return IconButton(
-                    icon: Icon(
-                      loginStore.showText ? Icons.remove_red_eye : Icons.visibility_off,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    onPressed: () {
-                      loginStore.showTextPass();
-                    },
-                  );
-                },
+          child: Observer(builder: (context) {
+            return TextField(
+              controller: controllerTextSenha,
+              focusNode: myFocusNode,
+              obscureText: _loginStore.showText,
+              style: TextStyle(
+                color: Colors.black87,
+                fontFamily: 'Google',
               ),
-              hintText: 'Digite sua senha',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: IconButton(
+                  icon: Icon(
+                    _loginStore.showText
+                        ? Icons.remove_red_eye
+                        : Icons.visibility_off,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onPressed: () {
+                    _loginStore.showTextPass();
+                  },
+                ),
+                hintText: 'Digite sua senha',
+                hintStyle: kHintTextStyle,
+              ),
+            );
+          }),
         ),
       ],
     );
   }
 
-  Widget _buildRememberMeCheckbox() {
+  Widget _buildRememberMeCheckbox(LoginStore _loginStore) {
     return Container(
       height: 20.0,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Theme.of(context).primaryColor,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value;
-                });
-              },
-            ),
+          Row(
+            children: <Widget>[
+              Theme(
+                data: ThemeData(unselectedWidgetColor: Colors.white),
+                child: Observer(
+                  builder: (BuildContext context) {
+                    return InkWell(
+                      child: Checkbox(
+                        value: _loginStore.lembrarme == null
+                            ? false
+                            : _loginStore.lembrarme,
+                        checkColor: Theme.of(context).primaryColor,
+                        activeColor: Colors.white,
+                        onChanged: (value) {
+                          _loginStore.setLembrarme(
+                              lembrar: value, email: '', senha: '');
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  _loginStore.setLembrarme(
+                      lembrar: !_loginStore.lembrarme, email: '', senha: '');
+                },
+                child: Text(
+                  'Lembrar-me',
+                  style: kLabelStyle,
+                ),
+              ),
+            ],
           ),
-          Text(
-            'Lembrar-me',
-            style: kLabelStyle,
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: InkWell(
+              child: Text(
+                'Esqueceu sua senha?',
+                style: kLabelStyle,
+              ),
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildLoginBtn(LoginStore _loginStore) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => Navigator.pushReplacementNamed(context, "/principal"),
+        onPressed: () {
+          _loginStore.loginApp(
+              controllerTextEmail.text, controllerTextSenha.text);
+          Toast.show(_loginStore.message, context,
+              duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+        },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(5),
         ),
         color: Colors.blue,
         child: Text(
-          'ENTRAR',
+          'Entrar',
           style: TextStyle(
             color: Colors.white,
             letterSpacing: 1.5,
@@ -162,8 +191,10 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    LoginStore _loginStore = Provider.of<LoginStore>(context);
+    _loginStore.loadLembrarme();
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).primaryColorLight,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: GestureDetector(
@@ -187,23 +218,21 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Image.asset(
-                          'assets/images/logo.png',
-                          fit: BoxFit.cover,
-                          height: 80,
-                        ),
+                        Text('Bem vindo ao,', style: TextStyle(fontSize: 38, color: Colors.white, fontFamily: 'Google'),),
+                        Text('UDSPautas', style: TextStyle(fontSize: 38, color: Colors.blue, fontFamily: 'Google', fontWeight: FontWeight.bold)),
                         SizedBox(height: 40),
                         _buildEmailTF(),
-                        SizedBox(
+                        /*SizedBox(
                           height: 10.0,
                         ),
-                        _buildPasswordTF(),
+                        _buildPasswordTF(_loginStore),
                         SizedBox(
                           height: 15,
                         ),
-                        _buildRememberMeCheckbox(),
-                        _buildLoginBtn(),
+                        _buildRememberMeCheckbox(_loginStore),
+                        _buildLoginBtn(_loginStore),*/
                       ],
                     ),
                   ),
