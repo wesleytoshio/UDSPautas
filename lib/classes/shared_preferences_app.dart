@@ -1,3 +1,4 @@
+import 'package:pautas_app/models/usuario_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesApp {
@@ -6,19 +7,24 @@ class SharedPreferencesApp {
   loadSharedPreferences() async {
     prefs = await SharedPreferences.getInstance();
   }
-  
-  setUsuarioLogado(int id) {
-    prefs.setInt('idUsuarioLogado', id);
+
+  setCredenciaisLogado(String email, String senha) {
+    prefs.setString('email', email);
+    prefs.setString('senha', senha);
   }
 
-  int get getUsuarioLogado {
-    if (prefs.getInt('idUsuarioLogado') == null) {
-      setUsuarioLogado(0);
+  Usuario get getCredenciaisLogado {
+    Usuario usuario;
+    if (prefs.getString('email') == '' || prefs.getString('email') == null) {
+      usuario = null;
+    } else {
+      usuario = new Usuario(email: prefs.getString('email'), senha: prefs.getString('senha'));
     }
-    return prefs.getInt('idUsuarioLogado');
+    return usuario;
   }
 
-  clearUsuarioLogado() {
-    prefs.setInt('idUsuarioLogado', 0);
+  clearCredenciaisLogado() {
+    prefs.setString('email', '');
+    prefs.setString('senha', '');
   }
 }

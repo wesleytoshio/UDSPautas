@@ -1,7 +1,7 @@
 import 'package:mobx/mobx.dart';
 import 'package:pautas_app/consts/messages_consts.dart';
-import 'package:pautas_app/models/usuario_model.dart';
 import 'package:pautas_app/repository/repository_usuarios.dart';
+import 'package:pautas_app/classes/class_retorno.dart';
 part 'register_store.g.dart';
 
 class RegisterStore = _RegisterStoreBase with _$RegisterStore;
@@ -43,28 +43,26 @@ abstract class _RegisterStoreBase with Store {
 
   @action
   newUsuario() async {
-    if (_validateRegister(email)) {
-      registrado = false;
-      Usuario newUsuario = Usuario(nome: nome, email: email, senha: senha);
-      Usuario usuEmail = await RepositoryUsuarios.getUsuario(newUsuario);
-      if (usuEmail == null) {
-        int result = await RepositoryUsuarios.addUsuario(newUsuario);
-        if (result == 0) {
-          message = MessagesConsts.erroCadastro;
-        } else {
-          registrado = true;
-          message = MessagesConsts.cadastroCorreto;  
-        }
+    if (_validateRegister(email, senha)) {
+      RetornoApp retorno =
+          await RepositoryUsuarios.registrarUsuario(email.trim(), senha.trim(), nome.trim());
+
+      if (!retorno.status) {
+        message = MessagesConsts.emailExiste;
       } else {
-        message = MessagesConsts.emailExiste;  
+        if (retorno.message == '') {}
+        message = MessagesConsts.cadastroCorreto;
       }
+      registrado = retorno.status;
     }
   }
 
-  bool _validateRegister(String email) {
+  bool _validateRegister(String email, String senha) {
     message = '';
     if (!email.contains('@')) {
       message = MessagesConsts.emailInvalido;
+    } else if (senha.length <= 6) {
+      message = MessagesConsts.senhaPequena;
     }
     return message.isEmpty;
   }

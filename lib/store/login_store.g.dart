@@ -46,7 +46,7 @@ mixin _$LoginStore on _LoginStoreBase, Store {
   final _$loginAppAsyncAction = AsyncAction('loginApp');
 
   @override
-  Future<Usuario> loginApp(String email, String senha) {
+  Future<RetornoApp> loginApp(String email, String senha) {
     return _$loginAppAsyncAction.run(() => super.loginApp(email, senha));
   }
 }

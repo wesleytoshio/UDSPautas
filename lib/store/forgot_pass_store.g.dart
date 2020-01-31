@@ -32,23 +32,6 @@ mixin _$ForgotPassStore on _ForgotPassStoreBase, Store {
     }, _$emailAtom, name: '${_$emailAtom.name}_set');
   }
 
-  final _$enviadoAtom = Atom(name: '_ForgotPassStoreBase.enviado');
-
-  @override
-  bool get enviado {
-    _$enviadoAtom.context.enforceReadPolicy(_$enviadoAtom);
-    _$enviadoAtom.reportObserved();
-    return super.enviado;
-  }
-
-  @override
-  set enviado(bool value) {
-    _$enviadoAtom.context.conditionallyRunInAction(() {
-      super.enviado = value;
-      _$enviadoAtom.reportChanged();
-    }, _$enviadoAtom, name: '${_$enviadoAtom.name}_set');
-  }
-
   final _$enviandoAtom = Atom(name: '_ForgotPassStoreBase.enviando');
 
   @override
@@ -83,13 +66,6 @@ mixin _$ForgotPassStore on _ForgotPassStoreBase, Store {
     }, _$messageAtom, name: '${_$messageAtom.name}_set');
   }
 
-  final _$sendEmailAsyncAction = AsyncAction('sendEmail');
-
-  @override
-  Future sendEmail() {
-    return _$sendEmailAsyncAction.run(() => super.sendEmail());
-  }
-
   final _$_ForgotPassStoreBaseActionController =
       ActionController(name: '_ForgotPassStoreBase');
 
@@ -98,6 +74,16 @@ mixin _$ForgotPassStore on _ForgotPassStoreBase, Store {
     final _$actionInfo = _$_ForgotPassStoreBaseActionController.startAction();
     try {
       return super.setEmail(aEmail);
+    } finally {
+      _$_ForgotPassStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  bool _validateRegister(String email) {
+    final _$actionInfo = _$_ForgotPassStoreBaseActionController.startAction();
+    try {
+      return super._validateRegister(email);
     } finally {
       _$_ForgotPassStoreBaseActionController.endAction(_$actionInfo);
     }

@@ -12,7 +12,7 @@ class HomePageView extends StatelessWidget {
       body: Center(
               child: RaisedButton(
           onPressed: () {
-            sharedPreferencesApp.clearUsuarioLogado();
+            sharedPreferencesApp.clearCredenciaisLogado();
             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
               return LoginView();
             }));

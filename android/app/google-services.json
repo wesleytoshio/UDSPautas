@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "164952358078",
+    "firebase_url": "https://udspautas-6d7d2.firebaseio.com",
+    "project_id": "udspautas-6d7d2",
+    "storage_bucket": "udspautas-6d7d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164952358078:android:086e1b953f7953c410b2ef",
+        "android_client_info": {
+          "package_name": "com.example.pautas_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "164952358078-ssgd5pq3a20dc3n9b0asnfnl7s07f94i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoNpmhUNx35eeE5CI5j8RVVRowyfOeTRM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "164952358078-ssgd5pq3a20dc3n9b0asnfnl7s07f94i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

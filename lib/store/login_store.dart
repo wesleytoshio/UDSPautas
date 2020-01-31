@@ -3,6 +3,7 @@ import 'package:pautas_app/classes/shared_preferences_app.dart';
 import 'package:pautas_app/consts/messages_consts.dart';
 import 'package:pautas_app/models/usuario_model.dart';
 import 'package:pautas_app/repository/repository_usuarios.dart';
+import 'package:pautas_app/classes/class_retorno.dart';
 part 'login_store.g.dart';
 
 class LoginStore = _LoginStoreBase with _$LoginStore;
@@ -17,22 +18,33 @@ abstract class _LoginStoreBase with Store {
 
   _LoginStoreBase(this.sharedPreferencesApp);
 
+  @action 
+  Future<RetornoApp> logoutApp() async {
+    return await RepositoryUsuarios.logoutUsuario();
+  }
+
   @action
-  Future<Usuario> loginApp(String email, String senha) async {
+  Future<RetornoApp> loginApp(String email, String senha) async {
     Usuario usuinput = Usuario(email: email, senha: senha);
-    Usuario usuRetorno;
+    RetornoApp retorno = RetornoApp(message: '', object: null, status: false);
     if (_validateLoginInput(usuinput)) {
-      usuRetorno = await RepositoryUsuarios.getUsuario(usuinput);
-      if (usuRetorno == null) {
-        message = MessagesConsts.emailIncorreto;
-      } else if (usuinput.senha != usuRetorno.senha) {
-        message = MessagesConsts.senhaIncorreta;
+      retorno = await RepositoryUsuarios.entrarUsuario(email.trim(), senha.trim());
+      if (!retorno.status) {
+        if (retorno.message == MessagesConsts.authErrorEmailNaoExiste) {
+          message = MessagesConsts.emailIncorreto;   
+        } else 
+        if (retorno.message == MessagesConsts.authErrorEmailExiste) {
+          message = MessagesConsts.emailExiste;   
+        } else 
+        if (retorno.message == MessagesConsts.authErrorSenhaIncorreta) {
+          message = MessagesConsts.senhaIncorreta;   
+        }
       } else {
-        logado = true;
-        sharedPreferencesApp.setUsuarioLogado(usuRetorno.id);
+        logado = retorno.status;
+        sharedPreferencesApp.setCredenciaisLogado(email, senha);
       }
     }
-    return usuRetorno;
+    return retorno;
   }
 
   bool _validateLoginInput(Usuario inputUsuario) {
@@ -51,4 +63,6 @@ abstract class _LoginStoreBase with Store {
     }
     return message.isEmpty;
   }
+
+
 }

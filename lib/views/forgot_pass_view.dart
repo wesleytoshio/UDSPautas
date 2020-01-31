@@ -111,7 +111,7 @@ class ForgotPassView extends StatelessWidget {
                                         ),
                                         onPressed: () async {
                                           if (_forgotPassStore.showButton) {
-                                            await _forgotPassStore.sendEmail();
+                                            /*await _forgotPassStore.sendEmail();*/
                                             if (_forgotPassStore
                                                 .message.isNotEmpty) {
                                               showToast(

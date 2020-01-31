@@ -1,23 +1,46 @@
-import 'package:pautas_app/consts/tables_const.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pautas_app/models/base_model.dart';
 
-class Pauta {
-  int id;  
-  String titulo;  
+class Pauta extends BaseModel {
+  String _documentId;
+  String titulo;
   String descricao;
-  String detalhes;  
-  int autor; 
+  String detalhes;
+  int autor;
   String status;
   bool deletado;
 
-  Pauta({this.id, this.titulo, this.descricao, this.detalhes, this.autor, this.status, this.deletado});   
+  Pauta(
+      {this.titulo,
+      this.descricao,
+      this.detalhes,
+      this.autor,
+      this.status,
+      this.deletado});
 
-  Pauta.fromJson(Map<String, dynamic> json) {
-    this.id = json[PautasStructure.id];
-    this.titulo = json[PautasStructure.titulo];
-    this.descricao = json[PautasStructure.descricao];
-    this.detalhes = json[PautasStructure.detalhes];
-    this.autor = json[PautasStructure.autor];
-    this.status = json[PautasStructure.status];
-    this.deletado = json[PautasStructure.deletado] == 1;
+  Pauta.fromMap(DocumentSnapshot document) {
+    _documentId = document.documentID;
+
+    this.titulo = document.data["titulo"];
+    this.descricao = document.data["descricao"];
+    this.detalhes = document.data["detalhes"];
+    this.autor = document.data["autor"];
+    this.status = document.data["status"];
+    this.deletado = document.data["deletado"];
+  }
+
+  @override
+  String documentId() => _documentId;
+
+  @override
+  toMap() {
+    var map = new Map<String, dynamic>();
+    map['titulo'] = this.titulo;
+    map['descricao'] = this.descricao;
+    map['detalhes'] = this.detalhes;
+    map['autor'] = this.autor;
+    map['status'] = this.status;
+    map['deletado'] = this.deletado;
+    return map;
   }
 }

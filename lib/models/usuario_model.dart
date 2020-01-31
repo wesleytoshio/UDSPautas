@@ -1,17 +1,31 @@
-import 'package:pautas_app/consts/tables_const.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:pautas_app/models/base_model.dart';
 
-class Usuario {
-  int id;  
+class Usuario extends BaseModel{
+  String _documentId;  
   String nome;  
   String email;
   String senha;  
 
-  Usuario({this.id, this.nome, this.email, this.senha});
+  Usuario({this.nome, this.email, this.senha});
 
-  Usuario.fromJson(Map<String, dynamic> json) {
-    this.id = json[UsuariosStructure.id];
-    this.nome = json[UsuariosStructure.nome];
-    this.email = json[UsuariosStructure.email];
-    this.senha = json[UsuariosStructure.senha];
+    Usuario.fromMap(DocumentSnapshot document) {
+    _documentId = document.documentID;
+
+    this.nome = document.data["nome"];
+    this.email = document.data["email"];
+    this.senha = document.data["senha"];
+  }
+
+  @override
+  String documentId() => _documentId;
+
+  @override
+  toMap() {
+    var map = new Map<String, dynamic>();
+    map['nome'] = this.nome;
+    map['email'] = this.email;
+    map['senha'] = this.senha;
+    return map;
   }
 }

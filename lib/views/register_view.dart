@@ -5,7 +5,6 @@ import 'package:mobx/mobx.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pautas_app/consts/font_styles_consts.dart';
 import 'package:pautas_app/store/register_store.dart';
-import 'package:toast/toast.dart';
 
 class RegisterView extends StatefulWidget {
   @override
@@ -173,10 +172,14 @@ class _RegisterViewState extends State<RegisterView> {
                                               if (_registerStore.exibirBotao) {
                                                 await _registerStore
                                                     .newUsuario();
-                                                showToast(
-                                                    _registerStore.message,
-                                                    position:
-                                                        ToastPosition.bottom);
+                                                if (_registerStore
+                                                    .message.isNotEmpty) {
+                                                  showToast(
+                                                      _registerStore.message,
+                                                      position:
+                                                          ToastPosition.bottom);
+                                                }
+
                                                 when(
                                                     (_) =>
                                                         _registerStore
