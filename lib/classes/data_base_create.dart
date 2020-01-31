@@ -28,7 +28,8 @@ class DatabaseCreate {
     (
       ${UsuariosStructure.id} INTEGER PRIMARY KEY,
       ${UsuariosStructure.nome} TEXT,
-      ${UsuariosStructure.email} TEXT
+      ${UsuariosStructure.email} TEXT,
+      ${UsuariosStructure.senha} TEXT
     );''';
 
     await db.execute(todoSql);

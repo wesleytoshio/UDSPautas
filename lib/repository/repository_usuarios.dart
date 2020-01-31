@@ -4,15 +4,21 @@ import 'package:pautas_app/models/usuario_model.dart';
 
 class RepositoryUsuarios {
   static Future<Usuario> getUsuario(Usuario usuario) async {
+    Usuario newUsuario;
     final sql = '''SELECT * FROM ${TablesNameConst.usuarios}
     WHERE ${UsuariosStructure.email} = ?''';
     List<dynamic> params = [usuario.email];
     final data = await db.rawQuery(sql, params);
-    final newUsuario = Usuario.fromJson(data.first);
+    if (data.isNotEmpty) {
+      newUsuario = Usuario.fromJson(data.first);
+    } else {
+      newUsuario= null;  
+    }
+    
     return newUsuario;
   }
 
-  static Future<void> addUsuario(Usuario usuario) async {
+  static Future<int> addUsuario(Usuario usuario) async {
     int newId = await usuariosCount();
     if (await getUsuario(usuario) == null) {
       final sql = '''INSERT INTO ${TablesNameConst.usuarios}
@@ -31,6 +37,7 @@ class RepositoryUsuarios {
       ];
       final result = await db.rawInsert(sql, params);
       DatabaseCreate.databaseLog('Add usuario', sql, null, result, params);
+      return result;
     }
   }
 

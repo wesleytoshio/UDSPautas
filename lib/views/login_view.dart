@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pautas_app/consts/style_consts.dart';
+import 'package:mobx/mobx.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:pautas_app/consts/font_styles_consts.dart';
 import 'package:pautas_app/store/login_store.dart';
+import 'package:pautas_app/views/forgot_pass_view.dart';
+import 'package:pautas_app/views/home_view.dart';
+import 'package:pautas_app/views/register_view.dart';
+import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -10,158 +15,25 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  bool _rememberMe = false;
-  bool _eyeOff = true;
-
-  LoginStore loginStore;
-
-  FocusNode myFocusNode;
+  FocusNode focoSenha;
+  TextEditingController controllerEmail = TextEditingController();
+  TextEditingController controllerSenha = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    loginStore = LoginStore();
-    loginStore.loadPreferences();
-    myFocusNode = FocusNode();
+    focoSenha = FocusNode();
   }
 
   @override
   void dispose() {
-    myFocusNode.dispose();
-
+    focoSenha.dispose();
     super.dispose();
-  }
-
-  Widget _buildEmailTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            onSubmitted: (texto) =>
-                FocusScope.of(context).requestFocus(myFocusNode),
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            style: TextStyle(
-              color: Colors.black87,
-              fontFamily: 'Google',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.mail,
-                color: Theme.of(context).primaryColor,
-              ),
-              hintText: 'Digite seu email',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            focusNode: myFocusNode,
-            obscureText: _eyeOff,
-            style: TextStyle(
-              color: Colors.black87,
-              fontFamily: 'Google',
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Observer(
-                builder: (BuildContext context) {
-                  return IconButton(
-                    icon: Icon(
-                      loginStore.showText ? Icons.remove_red_eye : Icons.visibility_off,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    onPressed: () {
-                      loginStore.showTextPass();
-                    },
-                  );
-                },
-              ),
-              hintText: 'Digite sua senha',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildRememberMeCheckbox() {
-    return Container(
-      height: 20.0,
-      child: Row(
-        children: <Widget>[
-          Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
-            child: Checkbox(
-              value: _rememberMe,
-              checkColor: Theme.of(context).primaryColor,
-              activeColor: Colors.white,
-              onChanged: (value) {
-                setState(() {
-                  _rememberMe = value;
-                });
-              },
-            ),
-          ),
-          Text(
-            'Lembrar-me',
-            style: kLabelStyle,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoginBtn() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
-      width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () => Navigator.pushReplacementNamed(context, "/principal"),
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.blue,
-        child: Text(
-          'ENTRAR',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Google',
-          ),
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
+    LoginStore _loginStore = Provider.of<LoginStore>(context);
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -179,31 +51,144 @@ class _LoginViewState extends State<LoginView> {
               Container(
                 height: double.infinity,
                 child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: BouncingScrollPhysics(),
                   child: Container(
                     margin: EdgeInsets.symmetric(
                       horizontal: 20.0,
                       vertical: 120.0,
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Image.asset(
-                          'assets/images/logo.png',
-                          fit: BoxFit.cover,
-                          height: 80,
+                        Row(
+                          children: <Widget>[
+                            Text(
+                              'Bem vindo ao,',
+                              style: FontStylesConsts.titleLogin,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  'UDS',
+                                  style: FontStylesConsts.titleLoginBoldUDS,
+                                ),
+                                Text(
+                                  'Pautas',
+                                  style: FontStylesConsts.titleLoginBold,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 100),
+                        TextField(
+                          textInputAction: TextInputAction.go,
+                          keyboardType: TextInputType.emailAddress,
+                          onSubmitted: (value) {
+                            FocusScope.of(context).requestFocus(focoSenha);
+                          },
+                          controller: controllerEmail,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            hintStyle: FontStylesConsts.hintStyleLogin,
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        TextField(
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: true,
+                          focusNode: focoSenha,
+                          controller: controllerSenha,
+                          decoration: InputDecoration(
+                            hintText: 'Senha',
+                            hintStyle: FontStylesConsts.hintStyleLogin,
+                          ),
                         ),
                         SizedBox(height: 40),
-                        _buildEmailTF(),
-                        SizedBox(
-                          height: 10.0,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              'Entrar',
+                              style: FontStylesConsts.subTitileLogin,
+                            ),
+                            InkWell(
+                              child: Container(
+                                height: 75,
+                                width: 75,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.arrow_forward,
+                                    color: Colors.black87,
+                                  ),
+                                  onPressed: () async {
+                                    await _loginStore.loginApp(
+                                        controllerEmail.text,
+                                        controllerSenha.text);
+                                    if (_loginStore.message.isNotEmpty) {
+                                      showToast(_loginStore.message,
+                                          position: ToastPosition.bottom);
+                                    }
+                                    when((_) => _loginStore.logado == true, () {
+                                      Navigator.pushReplacement(context,
+                                          MaterialPageRoute(builder: (context) {
+                                        return HomePageView();
+                                      }));
+                                    });
+                                  },
+                                ),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle),
+                              ),
+                            ),
+                          ],
                         ),
-                        _buildPasswordTF(),
                         SizedBox(
-                          height: 15,
+                          height: 80,
                         ),
-                        _buildRememberMeCheckbox(),
-                        _buildLoginBtn(),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return RegisterView();
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Registrar-se',
+                                style: FontStylesConsts.labelsLogin,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return ForgotPassView();
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Esqueci minha Senha',
+                                style: FontStylesConsts.labelsLogin,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ),

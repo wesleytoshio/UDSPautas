@@ -8,88 +8,47 @@ part 'login_store.g.dart';
 class LoginStore = _LoginStoreBase with _$LoginStore;
 
 abstract class _LoginStoreBase with Store {
-  SharedPreferencesApp _sharedPreferencesApp = SharedPreferencesApp();
-  
+  final SharedPreferencesApp sharedPreferencesApp;
   @observable
-  List<String> remembermeList;
-
-  @observable 
-  bool lembrarme = false;
+  String message;
 
   @observable
-  String message = '';
+  bool logado;
 
-  @observable
-  Usuario usuario;
-
-  @observable 
-  int idUsuLogado = 0;
-
-  @observable
-  bool showText = false;
+  _LoginStoreBase(this.sharedPreferencesApp);
 
   @action
-  showTextPass() {
-    showText = !showText;  
-  }
-
-  @action
-  loginApp(Usuario usuario) {
-    message = '';
-    _validateLoginInput(usuario);
-    _loadUsuario().then((usu) {
-      if (usu == null) {
+  Future<Usuario> loginApp(String email, String senha) async {
+    Usuario usuinput = Usuario(email: email, senha: senha);
+    Usuario usuRetorno;
+    if (_validateLoginInput(usuinput)) {
+      usuRetorno = await RepositoryUsuarios.getUsuario(usuinput);
+      if (usuRetorno == null) {
         message = MessagesConsts.emailIncorreto;
-      } else if (usuario.senha != usu.senha) {
+      } else if (usuinput.senha != usuRetorno.senha) {
         message = MessagesConsts.senhaIncorreta;
       } else {
-        usu = usuario;
-        _sharedPreferencesApp.setUsuarioLogado(usuario.id);
+        logado = true;
+        sharedPreferencesApp.setUsuarioLogado(usuRetorno.id);
       }
-    });
+    }
+    return usuRetorno;
   }
 
-  @action
-  setLembrarme(bool check) {
-    _sharedPreferencesApp.setLembrarme(check);
-  }
-
-  @action 
-  loadPreferences() {
-    _sharedPreferencesApp.loadSharedPreferences();
-    _getRememberMe().then((lembrarme) {
-      remembermeList = lembrarme;
-    });
-    lembrarme = _sharedPreferencesApp.getLembrarme; 
-    idUsuLogado = _sharedPreferencesApp.getUsuarioLogado;
-  }
-
-  Future<Usuario> _loadUsuario() {
-    return RepositoryUsuarios.getUsuario(usuario);
-  }
-
-  Future<List<String>> _getRememberMe() async {
-    return _sharedPreferencesApp.getEmailSenhaLembrarme;
-  }
-
-  _validateLoginInput(Usuario inputUsuario) {
+  bool _validateLoginInput(Usuario inputUsuario) {
+    message = '';
     if ((inputUsuario.email.isEmpty || inputUsuario.email == null) &&
         (inputUsuario.senha.isEmpty || inputUsuario.senha == null)) {
       message = MessagesConsts.emailsenhaValidacao;
-    }
-
-    if ((inputUsuario.email.isEmpty || inputUsuario.email == null) &&
+    } else if ((inputUsuario.email.isEmpty || inputUsuario.email == null) &&
         (inputUsuario.senha.isNotEmpty || inputUsuario.senha != null)) {
       message = MessagesConsts.emailValidacao;
-    }
-
-    if ((inputUsuario.email.isNotEmpty || inputUsuario.email != null) &&
+    } else if ((inputUsuario.email.isNotEmpty || inputUsuario.email != null) &&
         (inputUsuario.senha.isEmpty || inputUsuario.senha == null)) {
       message = MessagesConsts.senhaValidacao;
-    }
-
-    if (inputUsuario.email.contains('@') == false) {
+    } else if (!inputUsuario.email.contains('@')) {
       message = MessagesConsts.emailInvalido;
     }
-  } 
+    return message.isEmpty;
+  }
 }

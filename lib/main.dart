@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:oktoast/oktoast.dart';
 import 'package:pautas_app/classes/data_base_create.dart';
 import 'package:pautas_app/classes/shared_preferences_app.dart';
-import 'package:pautas_app/store/controller_app.dart';
 import 'package:pautas_app/store/login_store.dart';
 import 'package:pautas_app/views/home_view.dart';
 import 'package:pautas_app/views/login_view.dart';
@@ -10,40 +10,41 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DatabaseCreate().initDatabase();
-  runApp(MyApp());
+  SharedPreferencesApp sharedPreferencesApp = SharedPreferencesApp();
+  await sharedPreferencesApp.loadSharedPreferences();
+  runApp(MyApp(
+    sharedPreferencesApp: sharedPreferencesApp,
+  ));
 }
 
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
+class MyApp extends StatelessWidget {
+  final SharedPreferencesApp sharedPreferencesApp;
 
-class _MyAppState extends State<MyApp> {
-  LoginStore loginStore;
-  @override
-  void initState() {
-    super.initState();
-    loginStore = LoginStore();
-    loginStore.loadPreferences();
-  }
+  const MyApp({Key key, this.sharedPreferencesApp}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      child: MaterialApp(
-        title: 'UDSPautas',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-            primaryColor: ThemeData.dark().primaryColor,
-            primarySwatch: Colors.blue),
-        home: loginStore.idUsuLogado == 0 ? LoginView() : HomePageView(),
+      child: OKToast(
+        child: MaterialApp(
+          title: 'UDSPautas',
+          debugShowCheckedModeBanner: false,
+          theme: new ThemeData(
+            primarySwatch: Colors.blue,
+            brightness: Brightness.dark,
+            accentColor: Colors.blue
+          ),
+          home: sharedPreferencesApp.getUsuarioLogado == 0
+              ? LoginView()
+              : HomePageView(),
+        ),
       ),
       providers: [
-        Provider<ControllerAppStore>(
-          create: (_) => ControllerAppStore(),
-        ),
         Provider<SharedPreferencesApp>(
-          create: (_) => SharedPreferencesApp(),
+          create: (_) => sharedPreferencesApp,
+        ),
+        Provider<LoginStore>(
+          create: (_) => LoginStore(sharedPreferencesApp),
         )
       ],
     );
