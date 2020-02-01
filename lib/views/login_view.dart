@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pautas_app/consts/font_styles_consts.dart';
@@ -51,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
               Container(
                 height: double.infinity,
                 child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
+                  physics: AlwaysScrollableScrollPhysics(),
                   child: Container(
                     margin: EdgeInsets.symmetric(
                       horizontal: 20.0,
@@ -87,6 +88,7 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         SizedBox(height: 100),
                         TextField(
+                          autofocus: false,
                           textInputAction: TextInputAction.go,
                           keyboardType: TextInputType.emailAddress,
                           onSubmitted: (value) {
@@ -100,6 +102,7 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         SizedBox(height: 30),
                         TextField(
+                          autofocus: false,
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: true,
                           focusNode: focoSenha,
@@ -118,33 +121,47 @@ class _LoginViewState extends State<LoginView> {
                               style: FontStylesConsts.subTitileLogin,
                             ),
                             InkWell(
-                              child: Container(
-                                height: 75,
-                                width: 75,
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.arrow_forward,
-                                    color: Colors.black87,
-                                  ),
-                                  onPressed: () async {
-                                    await _loginStore.loginApp(
-                                        controllerEmail.text,
-                                        controllerSenha.text);
-                                    if (_loginStore.message.isNotEmpty) {
-                                      showToast(_loginStore.message,
-                                          position: ToastPosition.bottom);
-                                    }
-                                    when((_) => _loginStore.logado == true, () {
-                                      Navigator.pushReplacement(context,
-                                          MaterialPageRoute(builder: (context) {
-                                        return HomePageView();
-                                      }));
-                                    });
-                                  },
-                                ),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle),
+                              child: Observer(
+                                builder: (BuildContext context) {
+                                  return Container(
+                                    height: 75,
+                                    width: 75,
+                                    child: IconButton(
+                                      icon: !_loginStore.logando
+                                          ? Icon(
+                                              Icons.arrow_forward,
+                                              color: Colors.blue,
+                                            )
+                                          : Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                      onPressed: () {
+                                        _loginStore.loginApp(
+                                            controllerEmail.text,
+                                            controllerSenha.text);
+                                        
+                                        when((_) => _loginStore.message.isNotEmpty,
+                                            () {
+                                          showToast(_loginStore.message,
+                                              position: ToastPosition.bottom);
+                                        });
+
+                                        when((_) => (_loginStore.logado == true && _loginStore.currentUser != null),
+                                            () {
+                                          Navigator.pushReplacement(context,
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return HomeView();
+                                          }));
+                                        });
+                                      },
+                                    ),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle),
+                                  );
+                                },
                               ),
                             ),
                           ],

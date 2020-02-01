@@ -100,6 +100,23 @@ mixin _$RegisterStore on _RegisterStoreBase, Store {
     }, _$registradoAtom, name: '${_$registradoAtom.name}_set');
   }
 
+  final _$registrandoAtom = Atom(name: '_RegisterStoreBase.registrando');
+
+  @override
+  bool get registrando {
+    _$registrandoAtom.context.enforceReadPolicy(_$registrandoAtom);
+    _$registrandoAtom.reportObserved();
+    return super.registrando;
+  }
+
+  @override
+  set registrando(bool value) {
+    _$registrandoAtom.context.conditionallyRunInAction(() {
+      super.registrando = value;
+      _$registrandoAtom.reportChanged();
+    }, _$registrandoAtom, name: '${_$registrandoAtom.name}_set');
+  }
+
   final _$newUsuarioAsyncAction = AsyncAction('newUsuario');
 
   @override

@@ -164,10 +164,15 @@ class _RegisterViewState extends State<RegisterView> {
                                           height: 75,
                                           width: 75,
                                           child: IconButton(
-                                            icon: Icon(
-                                              Icons.arrow_forward,
-                                              color: Colors.black87,
-                                            ),
+                                            icon: !_registerStore.registrando
+                                                ? Icon(
+                                                    Icons.arrow_forward,
+                                                    color: Colors.blue,
+                                                  )
+                                                : Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
                                             onPressed: () async {
                                               if (_registerStore.exibirBotao) {
                                                 await _registerStore
@@ -185,7 +190,12 @@ class _RegisterViewState extends State<RegisterView> {
                                                         _registerStore
                                                             .registrado ==
                                                         true, () {
-                                                  Navigator.pop(context);
+                                                  if (Navigator.canPop(
+                                                      context)) {
+                                                    Navigator.pop(context);
+                                                  } else {
+                                                    SystemNavigator.pop();
+                                                  }
                                                 });
                                               }
                                             },
@@ -206,9 +216,14 @@ class _RegisterViewState extends State<RegisterView> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text(
-                                  'Entrar',
-                                  style: FontStylesConsts.labelsLogin,
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'Entrar',
+                                    style: FontStylesConsts.labelsLogin,
+                                  ),
                                 ),
                               ],
                             )

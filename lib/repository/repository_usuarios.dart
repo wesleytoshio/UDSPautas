@@ -51,4 +51,9 @@ class RepositoryUsuarios {
       return RetornoApp(message: e.code, status: false, object: e);
     }
   }
+
+  static Future<Usuario> getUsuario(String email) async {
+    QuerySnapshot snapshot = await _collection.where('email', isEqualTo: email).snapshots().first;
+    return Usuario.fromMap(snapshot.documents[0]);
+  }
 }

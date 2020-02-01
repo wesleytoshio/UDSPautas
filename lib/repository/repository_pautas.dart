@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pautas_app/models/pauta_model.dart';
 
 class RepositoryPautas {
-  static CollectionReference _collection = Firestore.instance.collection('pautas');
+  static CollectionReference _collection =
+      Firestore.instance.collection('pautas');
 
-  static Future<void> add(Pauta pauta) async => await _collection.add(pauta.toMap());
+  static Future<void> add(Pauta pauta) async =>
+      await _collection.add(pauta.toMap());
 
   static Future<void> update(String documentId, Pauta pauta) async =>
       await _collection.document(documentId).updateData(pauta.toMap());
@@ -14,8 +16,14 @@ class RepositoryPautas {
     return Pauta.fromMap(snapshot);
   }
 
-  static Stream<List<Pauta>> get fetchPautas =>
-      _collection.snapshots().map((query) => query.documents
-          .map<Pauta>((document) => Pauta.fromMap(document))
-          .toList());
+  static Future<List<Pauta>> getAllPautas() async {
+    List<Pauta> list = [];
+
+    QuerySnapshot snapshot = await _collection.getDocuments();
+
+    snapshot.documents.forEach((f) {
+      list.add(Pauta.fromMap(f));
+    }); 
+    return list;
+  }
 }

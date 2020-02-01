@@ -78,14 +78,4 @@ mixin _$ForgotPassStore on _ForgotPassStoreBase, Store {
       _$_ForgotPassStoreBaseActionController.endAction(_$actionInfo);
     }
   }
-
-  @override
-  bool _validateRegister(String email) {
-    final _$actionInfo = _$_ForgotPassStoreBaseActionController.startAction();
-    try {
-      return super._validateRegister(email);
-    } finally {
-      _$_ForgotPassStoreBaseActionController.endAction(_$actionInfo);
-    }
-  }
 }

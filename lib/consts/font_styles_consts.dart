@@ -26,8 +26,25 @@ class FontStylesConsts {
       TextStyle(fontFamily: fontGoogle, fontSize: 26, color: Colors.white);
 
   static const labelsLogin = TextStyle(
+    fontFamily: fontGoogle,
+    fontSize: 16,
+    color: Colors.white,
+    decoration: TextDecoration.underline,
+  );
+
+  static const titleItemPauta = TextStyle(
+      fontFamily: fontGoogle,
+      fontSize: 18,
+      color: Colors.white,
+      fontWeight: FontWeight.bold);
+
+  static const descriptiontemPauta = TextStyle(
       fontFamily: fontGoogle,
       fontSize: 16,
-      color: Colors.white,
-      decoration: TextDecoration.underline,);
+      color: Colors.white);
+
+  static const autorCardStyle = TextStyle(
+      fontFamily: fontGoogle,
+      fontSize: 16,
+      color: Colors.blue);
 }

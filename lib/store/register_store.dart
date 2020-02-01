@@ -20,7 +20,10 @@ abstract class _RegisterStoreBase with Store {
   String message;
 
   @observable
-  bool registrado;
+  bool registrado = false;
+
+  @observable
+  bool registrando = false;
 
   @computed
   bool get exibirBotao =>
@@ -44,6 +47,7 @@ abstract class _RegisterStoreBase with Store {
   @action
   newUsuario() async {
     if (_validateRegister(email, senha)) {
+      registrando = true;
       RetornoApp retorno =
           await RepositoryUsuarios.registrarUsuario(email.trim(), senha.trim(), nome.trim());
 
@@ -54,6 +58,7 @@ abstract class _RegisterStoreBase with Store {
         message = MessagesConsts.cadastroCorreto;
       }
       registrado = retorno.status;
+      registrando = false;
     }
   }
 
@@ -61,7 +66,7 @@ abstract class _RegisterStoreBase with Store {
     message = '';
     if (!email.contains('@')) {
       message = MessagesConsts.emailInvalido;
-    } else if (senha.length <= 6) {
+    } else if (senha.length < 6) {
       message = MessagesConsts.senhaPequena;
     }
     return message.isEmpty;

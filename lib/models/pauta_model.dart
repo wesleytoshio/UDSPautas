@@ -6,17 +6,23 @@ class Pauta extends BaseModel {
   String titulo;
   String descricao;
   String detalhes;
-  int autor;
+  String autorId;
+  String autorNome;
   String status;
   bool deletado;
+  String data;
+  bool expanded = false;
 
   Pauta(
       {this.titulo,
       this.descricao,
       this.detalhes,
-      this.autor,
+      this.autorId,
+      this.autorNome,
       this.status,
-      this.deletado});
+      this.data,
+      this.deletado,
+      this.expanded});
 
   Pauta.fromMap(DocumentSnapshot document) {
     _documentId = document.documentID;
@@ -24,7 +30,9 @@ class Pauta extends BaseModel {
     this.titulo = document.data["titulo"];
     this.descricao = document.data["descricao"];
     this.detalhes = document.data["detalhes"];
-    this.autor = document.data["autor"];
+    this.autorId = document.data["autorId"];
+    this.autorNome = document.data["autorNome"];
+    this.data = document.data["data"];
     this.status = document.data["status"];
     this.deletado = document.data["deletado"];
   }
@@ -38,9 +46,11 @@ class Pauta extends BaseModel {
     map['titulo'] = this.titulo;
     map['descricao'] = this.descricao;
     map['detalhes'] = this.detalhes;
-    map['autor'] = this.autor;
+    map['autorId'] = this.autorId;
+    map['autorNome'] = this.autorNome;
     map['status'] = this.status;
     map['deletado'] = this.deletado;
+    map['data'] = this.data;
     return map;
   }
 }

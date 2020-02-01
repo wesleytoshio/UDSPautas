@@ -10,45 +10,64 @@ class LoginStore = _LoginStoreBase with _$LoginStore;
 
 abstract class _LoginStoreBase with Store {
   final SharedPreferencesApp sharedPreferencesApp;
+  @observable 
+  Usuario currentUser;
+
   @observable
   String message;
 
   @observable
   bool logado;
 
+  @observable
+  bool logando = false;
+
   _LoginStoreBase(this.sharedPreferencesApp);
 
-  @action 
+  @action
   Future<RetornoApp> logoutApp() async {
+    sharedPreferencesApp.clearCredenciaisLogado();
     return await RepositoryUsuarios.logoutUsuario();
   }
 
   @action
   Future<RetornoApp> loginApp(String email, String senha) async {
-    Usuario usuinput = Usuario(email: email, senha: senha);
-    RetornoApp retorno = RetornoApp(message: '', object: null, status: false);
-    if (_validateLoginInput(usuinput)) {
-      retorno = await RepositoryUsuarios.entrarUsuario(email.trim(), senha.trim());
-      if (!retorno.status) {
-        if (retorno.message == MessagesConsts.authErrorEmailNaoExiste) {
-          message = MessagesConsts.emailIncorreto;   
-        } else 
-        if (retorno.message == MessagesConsts.authErrorEmailExiste) {
-          message = MessagesConsts.emailExiste;   
-        } else 
-        if (retorno.message == MessagesConsts.authErrorSenhaIncorreta) {
-          message = MessagesConsts.senhaIncorreta;   
+    try {
+      logado = false;
+      message = '';
+      currentUser = null;
+      Usuario usuinput = Usuario(email: email, senha: senha);
+      RetornoApp retorno = RetornoApp(message: '', object: null, status: false);
+      if (_validateLoginInput(usuinput)) {
+        logando = true;
+        retorno =
+            await RepositoryUsuarios.entrarUsuario(email.trim(), senha.trim());
+        if (!retorno.status) {
+          if (retorno.message == MessagesConsts.authErrorEmailNaoExiste) {
+            message = MessagesConsts.emailIncorreto;
+          } else if (retorno.message == MessagesConsts.authErrorEmailExiste) {
+            message = MessagesConsts.emailExiste;
+          } else if (retorno.message ==
+              MessagesConsts.authErrorSenhaIncorreta) {
+            message = MessagesConsts.senhaIncorreta;
+          }
+        } else {
+          sharedPreferencesApp.setCredenciaisLogado(email, senha);
+          currentUser = await RepositoryUsuarios.getUsuario(email);
+          logado = retorno.status;
         }
-      } else {
-        logado = retorno.status;
-        sharedPreferencesApp.setCredenciaisLogado(email, senha);
       }
+      logando = false;
+      return retorno;
+    } catch (e) {
+      logado = false;
+      logando = false;
+      return RetornoApp(message: 'Error', object: null, status: false);
+      
     }
-    return retorno;
   }
 
   bool _validateLoginInput(Usuario inputUsuario) {
-    message = '';
     if ((inputUsuario.email.isEmpty || inputUsuario.email == null) &&
         (inputUsuario.senha.isEmpty || inputUsuario.senha == null)) {
       message = MessagesConsts.emailsenhaValidacao;
@@ -63,6 +82,4 @@ abstract class _LoginStoreBase with Store {
     }
     return message.isEmpty;
   }
-
-
 }

@@ -1,22 +1,144 @@
 import 'package:flutter/material.dart';
-import 'package:pautas_app/classes/shared_preferences_app.dart';
-import 'package:pautas_app/views/login_view.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
+import 'package:pautas_app/consts/font_styles_consts.dart';
+import 'package:pautas_app/models/pauta_model.dart';
+import 'package:pautas_app/store/login_store.dart';
+import 'package:pautas_app/store/pautas_store.dart';
+import 'package:pautas_app/views/profile_view.dart';
+import 'package:pautas_app/widgets/list_pautas.dart';
 import 'package:provider/provider.dart';
 
-class HomePageView extends StatelessWidget {
+class HomeView extends StatefulWidget {
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  PautasStore _pautasStore;
+  @override
+  void initState() {
+    super.initState();
+    _pautasStore = GetIt.I<PautasStore>();
+    _pautasStore.loadPautas();
+  }
+
   @override
   Widget build(BuildContext context) {
-    SharedPreferencesApp sharedPreferencesApp =
-        Provider.of<SharedPreferencesApp>(context);
+    LoginStore _loginStore = Provider.of<LoginStore>(context);
     return Scaffold(
-      body: Center(
-              child: RaisedButton(
-          onPressed: () {
-            sharedPreferencesApp.clearCredenciaisLogado();
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context){
-              return LoginView();
-            }));
-          },
+      appBar: PreferredSize(
+        child: Container(
+          margin: EdgeInsets.only(
+            left: 20.0,
+            right: 20,
+            top: 60,
+            bottom: 30,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'Olá, ',
+                          style: FontStylesConsts.titleLogin,
+                        ),
+                      ],
+                    ),
+                    Flexible(
+                      child: Text(
+                        _loginStore.currentUser.nome,
+                        style: FontStylesConsts.titleLoginBoldUDS,
+                        softWrap: true,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Tooltip(
+                  message: 'Meu Perfil',
+                  child: IconButton(
+                    icon: Icon(Icons.person),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return ProfileView();
+                      }));
+                    },
+                  )),
+            ],
+          ),
+        ),
+        preferredSize: Size.fromHeight(150),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {},
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      body: DefaultTabController(
+        length: 2,
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: Column(
+            children: <Widget>[
+              TabBar(
+                labelStyle: TextStyle(
+                    fontFamily: 'Google', fontWeight: FontWeight.w700),
+                indicatorSize: TabBarIndicatorSize.label,
+                labelColor: Colors.blue,
+                unselectedLabelColor: Colors.grey[400],
+                indicator: MD2Indicator(
+                    indicatorHeight: 3,
+                    indicatorColor: Colors.blue,
+                    indicatorSize: MD2IndicatorSize.normal),
+                tabs: <Widget>[
+                  Tab(
+                    text: "Pautas Abertas",
+                  ),
+                  Tab(
+                    text: "Pautas Fechadas",
+                  ),
+                ],
+              ),
+              Observer(
+                builder: (BuildContext context) {
+                  List<Pauta> list = _pautasStore.listPautas;
+                  int ultimoIndex = _pautasStore.ultimoExp;
+                  if (list != null) {
+                    return Expanded(
+                      key: Key(ultimoIndex.toString()),
+                      child: PageView.builder(
+                        itemCount: 2,
+                        itemBuilder: (BuildContext context, int index) {
+                          return list.length == 0
+                              ? Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : ListPautas(
+                                  list: list,
+                                );
+                        },
+                      ),
+                    );
+                  } else {
+                    return Text('Não há pautas para visualizar...');
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

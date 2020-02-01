@@ -22,11 +22,11 @@ abstract class _ForgotPassStoreBase with Store {
     email = aEmail;
   }
 
-  bool _validateRegister(String email) {
+  /*bool _validateRegister(String email) {
     message = '';
     if (!email.contains('@')) {
       message = MessagesConsts.emailInvalido;
     }
     return message.isEmpty;
-  }
+  }*/
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pautas_app/classes/shared_preferences_app.dart';
 import 'package:pautas_app/store/login_store.dart';
+import 'package:pautas_app/store/pautas_store.dart';
 import 'package:pautas_app/views/home_view.dart';
 import 'package:pautas_app/views/login_view.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +28,9 @@ Future<void> main() async {
     logar = false;
   }
 
+  GetIt getIt = GetIt.instance;
+  getIt.registerSingleton<PautasStore>(PautasStore());
+
   runApp(MyApp(
     sharedPreferencesApp: sharedPreferencesApp,
     loginStore: loginStore,
@@ -37,7 +42,7 @@ class MyApp extends StatelessWidget {
   final SharedPreferencesApp sharedPreferencesApp;
   final LoginStore loginStore;
   final bool logar;
-  const MyApp({Key key, this.sharedPreferencesApp, this.loginStore, this.logar})
+  MyApp({Key key, this.sharedPreferencesApp, this.loginStore, this.logar})
       : super(key: key);
 
   @override
@@ -51,7 +56,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
               brightness: Brightness.dark,
               accentColor: Colors.blue),
-          home: logar ? HomePageView(): LoginView(),
+          home: logar ? HomeView(): LoginView(),
         ),
       ),
       providers: [
