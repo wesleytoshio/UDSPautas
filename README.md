@@ -10,7 +10,7 @@ App proposto para teste de vaga na empresa UDSSoftware.
 - Tela de Registro
 - Tela para redefinição da Senha
 - Tela inicial com visualização das Pautas Abertas e Fechadas.
-- Tela de Perfiu com opção de fazer LogOut
+- Tela de Perfil com opção de fazer LogOut
 - Tela de Cadastro de Pautas
 
 ### Dev Tools
