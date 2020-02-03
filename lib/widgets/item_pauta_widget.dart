@@ -35,7 +35,6 @@ class _ItemPautaState extends State<ItemPauta> {
             overflow: TextOverflow.ellipsis,
           ),
           onExpansionChanged: this.widget.onExpanded,
-
           initiallyExpanded:
               _pautasStore.ultimoExp == this.widget.pauta.documentId()
                   ? true
@@ -68,20 +67,31 @@ class _ItemPautaState extends State<ItemPauta> {
                     softWrap: true,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: RaisedButton(
-                      elevation: 0,
-                      color: pauta.status == 'A' ? Colors.red: Colors.blue, 
-                      child:
-                          Text(pauta.status == 'A' ? 'Fechar' : 'Reabrir'),
-                      onPressed: () {
-                        _pautasStore.updateStatus(pauta, pauta.status == 'A' ? 'F' : 'A');
-                        _pautasStore.loadPautasAbertas();
-                        _pautasStore.loadPautasFechadas(); 
-                        _pautasStore.setUltimoExpandido(''); 
-                      },
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      RaisedButton(
+                        elevation: 0,
+                        color: pauta.status == 'A' ? Colors.red : Colors.blue,
+                        child: Text(pauta.status == 'A' ? 'Fechar' : 'Reabrir'),
+                        onPressed: () {
+                          _pautasStore.updateStatus(
+                              pauta, pauta.status == 'A' ? 'F' : 'A');
+                          _pautasStore.loadPautasAbertas();
+                          _pautasStore.loadPautasFechadas();
+                          _pautasStore.setUltimoExpandido('');
+                        },
+                      ),
+                      pauta.status == 'A' ? IconButton(tooltip: 'Deletar Pauta',
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _pautasStore.deletePauta(pauta);
+                          _pautasStore.loadPautasAbertas();
+                          _pautasStore.loadPautasFechadas();
+                          _pautasStore.setUltimoExpandido('');
+                        },
+                      ): Container()
+                    ],
                   ),
                 ],
               ),

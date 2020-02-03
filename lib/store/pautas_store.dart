@@ -62,6 +62,11 @@ abstract class _PautasStoreBase with Store {
   }
 
   @action
+  deletePauta(Pauta pauta) async {
+    await RepositoryPautas.delete(pauta.documentId());
+  }
+
+  @action
   Future loadPautasFechadas() async {
     listPautasFechadas = null;
     List<Pauta> list = await RepositoryPautas.getAllPautas('F');

@@ -201,6 +201,13 @@ mixin _$PautasStore on _PautasStoreBase, Store {
         .run(() => super.updateStatus(pauta, novoStatus));
   }
 
+  final _$deletePautaAsyncAction = AsyncAction('deletePauta');
+
+  @override
+  Future deletePauta(Pauta pauta) {
+    return _$deletePautaAsyncAction.run(() => super.deletePauta(pauta));
+  }
+
   final _$loadPautasFechadasAsyncAction = AsyncAction('loadPautasFechadas');
 
   @override
