@@ -14,7 +14,7 @@ App proposto para teste de vaga na empresa UDSSoftware.
 - Tela de Cadastro de Pautas
 
 ### Dev Tools
-- App feito com gerencia de estado da bibliotec MobX e com gerencia de instancias utilizando a biblioteca GetIt.
+- App feito com gerência de estado utilizando MobX e com gerência de instancias utilizando a biblioteca GetIt.
 
 # Screenshots
 
