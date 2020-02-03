@@ -1,17 +1,35 @@
-# pautas_app
+### UDSPautas
 
-A new Flutter project.
+App proposto para teste de vaga na empresa UDSSoftware.
 
-## Getting Started
+##### Apk Android dísponivel na pasta apk
 
-This project is a starting point for a Flutter application.
+### Features
 
-A few resources to get you started if this is your first Flutter project:
+- Tela de Login
+- Tela de Registro
+- Tela para redefinição da Senha
+- Tela inicial com visualização das Pautas Abertas e Fechadas.
+- Tela de Perfiu com opção de fazer LogOut
+- Tela de Cadastro de Pautas
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Dev Tools
+- App feito com gerencia de estado da bibliotec MobX e com gerencia de instancias utilizando a biblioteca GetIt.
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# UDSPautas
+# Screenshots
+
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/1.png?token=AFSVQRGQ7D4H2DVJ7LRKMB26HAYWS)
+
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/2.png?token=AFSVQRGZABDBOGVEB3IC6SK6HAY22)
+
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/3.png?token=AFSVQRHLMIGUYC2DJLCNWCK6HAY6K)
+
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/4.png?token=AFSVQRE3KI5COMOCSHGIYBK6HAZBQ)
+
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/5.png?token=AFSVQRF2T2ZDBMT63MIHWSK6HAZJS)
+
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/6.png?token=AFSVQRA7FG7MKYCFXLYPYM26HAZKY)
+
+
+
+
