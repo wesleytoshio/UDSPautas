@@ -16,11 +16,11 @@ class RepositoryPautas {
     return Pauta.fromMap(snapshot);
   }
 
-  static Future<List<Pauta>> getAllPautas() async {
+  static Future<List<Pauta>> getAllPautas(String status) async {
     List<Pauta> list = [];
 
-    QuerySnapshot snapshot = await _collection.getDocuments();
-
+    QuerySnapshot snapshot = await _collection.where('status', isEqualTo: status).snapshots().first;
+    
     snapshot.documents.forEach((f) {
       list.add(Pauta.fromMap(f));
     }); 

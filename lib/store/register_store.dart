@@ -48,8 +48,8 @@ abstract class _RegisterStoreBase with Store {
   newUsuario() async {
     if (_validateRegister(email, senha)) {
       registrando = true;
-      RetornoApp retorno =
-          await RepositoryUsuarios.registrarUsuario(email.trim(), senha.trim(), nome.trim());
+      RetornoApp retorno = await RepositoryUsuarios.registrarUsuario(
+          email.trim(), senha.trim(), nome.trim());
 
       if (!retorno.status) {
         message = MessagesConsts.emailExiste;
@@ -64,11 +64,18 @@ abstract class _RegisterStoreBase with Store {
 
   bool _validateRegister(String email, String senha) {
     message = '';
-    if (!email.contains('@')) {
+    if (nome.isEmpty) {
+      message = MessagesConsts.nomeValidacao;
+    } else if (email.isEmpty) {
+      message = MessagesConsts.emailValidacao;
+    } else if (senha.isEmpty) {
+      message = MessagesConsts.senhaValidacao;
+    } else if (!email.contains('@')) {
       message = MessagesConsts.emailInvalido;
-    } else if (senha.length < 6) {
+    }else if (senha.length < 6) {
       message = MessagesConsts.senhaPequena;
     }
+    
     return message.isEmpty;
   }
 }

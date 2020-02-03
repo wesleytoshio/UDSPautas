@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pautas_app/consts/font_styles_consts.dart';
@@ -8,7 +9,6 @@ import 'package:pautas_app/store/login_store.dart';
 import 'package:pautas_app/views/forgot_pass_view.dart';
 import 'package:pautas_app/views/home_view.dart';
 import 'package:pautas_app/views/register_view.dart';
-import 'package:provider/provider.dart';
 
 class LoginView extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    LoginStore _loginStore = Provider.of<LoginStore>(context);
+    LoginStore _loginStore = GetIt.I<LoginStore>();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -52,7 +52,7 @@ class _LoginViewState extends State<LoginView> {
               Container(
                 height: double.infinity,
                 child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
+                  physics: BouncingScrollPhysics(),
                   child: Container(
                     margin: EdgeInsets.symmetric(
                       horizontal: 20.0,
@@ -130,25 +130,33 @@ class _LoginViewState extends State<LoginView> {
                                       icon: !_loginStore.logando
                                           ? Icon(
                                               Icons.arrow_forward,
-                                              color: Colors.blue,
+                                              color: Colors.white,
                                             )
                                           : Center(
-                                              child:
-                                                  CircularProgressIndicator(),
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    new AlwaysStoppedAnimation<
+                                                        Color>(Colors.white),
+                                              ),
                                             ),
                                       onPressed: () {
                                         _loginStore.loginApp(
                                             controllerEmail.text,
                                             controllerSenha.text);
-                                        
-                                        when((_) => _loginStore.message.isNotEmpty,
+
+                                        when(
+                                            (_) =>
+                                                _loginStore.message.isNotEmpty,
                                             () {
                                           showToast(_loginStore.message,
                                               position: ToastPosition.bottom);
                                         });
 
-                                        when((_) => (_loginStore.logado == true && _loginStore.currentUser != null),
-                                            () {
+                                        when(
+                                            (_) =>
+                                                (_loginStore.logado == true &&
+                                                    _loginStore.currentUser !=
+                                                        null), () {
                                           Navigator.pushReplacement(context,
                                               MaterialPageRoute(
                                                   builder: (context) {
@@ -158,7 +166,7 @@ class _LoginViewState extends State<LoginView> {
                                       },
                                     ),
                                     decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Colors.blue,
                                         shape: BoxShape.circle),
                                   );
                                 },

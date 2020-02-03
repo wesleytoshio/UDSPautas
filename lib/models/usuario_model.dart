@@ -4,15 +4,17 @@ import 'package:pautas_app/models/base_model.dart';
 class Usuario extends BaseModel{
   String _documentId;  
   String nome;  
+  String uidUsu; 
   String email;
-  String senha;  
+  String senha;
 
-  Usuario({this.nome, this.email, this.senha});
+  Usuario({this.nome, this.uidUsu, this.senha, this.email});
 
     Usuario.fromMap(DocumentSnapshot document) {
     _documentId = document.documentID;
 
     this.nome = document.data["nome"];
+    this.uidUsu = document.data["uidUsu"];
     this.email = document.data["email"];
     this.senha = document.data["senha"];
   }
@@ -24,6 +26,7 @@ class Usuario extends BaseModel{
   toMap() {
     var map = new Map<String, dynamic>();
     map['nome'] = this.nome;
+    map['uidUsu'] = this.uidUsu;
     map['email'] = this.email;
     map['senha'] = this.senha;
     return map;

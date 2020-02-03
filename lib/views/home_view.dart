@@ -7,27 +7,33 @@ import 'package:pautas_app/consts/font_styles_consts.dart';
 import 'package:pautas_app/models/pauta_model.dart';
 import 'package:pautas_app/store/login_store.dart';
 import 'package:pautas_app/store/pautas_store.dart';
+import 'package:pautas_app/views/add_pauta_view.dart';
 import 'package:pautas_app/views/profile_view.dart';
 import 'package:pautas_app/widgets/list_pautas.dart';
-import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   PautasStore _pautasStore;
+  TabController _tabController;
+  PageController _pageController;
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _pageController = PageController();
     _pautasStore = GetIt.I<PautasStore>();
-    _pautasStore.loadPautas();
+    _pautasStore.loadPautasAbertas();
+    _pautasStore.loadPautasFechadas();
+    _pautasStore.setUltimoExpandido('');
   }
 
   @override
   Widget build(BuildContext context) {
-    LoginStore _loginStore = Provider.of<LoginStore>(context);
+    LoginStore _loginStore = GetIt.I<LoginStore>();
     return Scaffold(
       appBar: PreferredSize(
         child: Container(
@@ -67,24 +73,51 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               Tooltip(
-                  message: 'Meu Perfil',
-                  child: IconButton(
-                    icon: Icon(Icons.person),
-                    onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (BuildContext context) {
-                        return ProfileView();
-                      }));
-                    },
-                  )),
+                message: 'Atualizar',
+                child: IconButton(
+                  icon: Icon(Icons.refresh),
+                  onPressed: () {
+                    _pautasStore.loadPautasAbertas();
+                    _pautasStore.loadPautasFechadas();
+                  },
+                ),
+              ),
+              Tooltip(
+                message: 'Meu Perfil',
+                child: IconButton(
+                  icon: Icon(Icons.person),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) {
+                          return ProfileView();
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
         ),
         preferredSize: Size.fromHeight(150),
       ),
       floatingActionButton: FloatingActionButton(
+        tooltip: 'Adicionar Pauta',
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () async {
+          String result = await Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return AddPautaView();
+          }));
+          if (result == 'Ok') {
+            _pageController.jumpToPage(0);
+            _tabController.animateTo(0);
+            _pautasStore.setPageIndex(0);
+  
+          }
+        },
       ),
       backgroundColor: Theme.of(context).primaryColor,
       body: DefaultTabController(
@@ -94,6 +127,11 @@ class _HomeViewState extends State<HomeView> {
           child: Column(
             children: <Widget>[
               TabBar(
+                onTap: (index) {
+                  _pageController.jumpToPage(index);
+                  _pautasStore.setPageIndex(index);
+                },
+                controller: _tabController,
                 labelStyle: TextStyle(
                     fontFamily: 'Google', fontWeight: FontWeight.w700),
                 indicatorSize: TabBarIndicatorSize.label,
@@ -114,27 +152,27 @@ class _HomeViewState extends State<HomeView> {
               ),
               Observer(
                 builder: (BuildContext context) {
-                  List<Pauta> list = _pautasStore.listPautas;
-                  int ultimoIndex = _pautasStore.ultimoExp;
-                  if (list != null) {
-                    return Expanded(
-                      key: Key(ultimoIndex.toString()),
-                      child: PageView.builder(
-                        itemCount: 2,
-                        itemBuilder: (BuildContext context, int index) {
-                          return list.length == 0
-                              ? Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : ListPautas(
-                                  list: list,
-                                );
-                        },
-                      ),
-                    );
-                  } else {
-                    return Text('Não há pautas para visualizar...');
-                  }
+                  List<Pauta> listAbertas = _pautasStore.listPautasAbertas;
+                  List<Pauta> listFechadas = _pautasStore.listPautasFechadas;
+                  return Expanded(
+                    child: PageView(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        _tabController.animateTo(index);
+                        _pautasStore.setPageIndex(index);
+                      },
+                      children: <Widget>[
+                        ListPautas(
+                          index: 0,
+                          list: listAbertas,
+                        ),
+                        ListPautas(
+                          index: 1,
+                          list: listFechadas,
+                        )
+                      ],
+                    ),
+                  );
                 },
               ),
             ],

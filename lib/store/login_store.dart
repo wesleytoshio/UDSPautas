@@ -26,8 +26,9 @@ abstract class _LoginStoreBase with Store {
 
   @action
   Future<RetornoApp> logoutApp() async {
+    var retorno = await RepositoryUsuarios.logoutUsuario();
     sharedPreferencesApp.clearCredenciaisLogado();
-    return await RepositoryUsuarios.logoutUsuario();
+    return retorno;
   }
 
   @action
@@ -36,9 +37,8 @@ abstract class _LoginStoreBase with Store {
       logado = false;
       message = '';
       currentUser = null;
-      Usuario usuinput = Usuario(email: email, senha: senha);
       RetornoApp retorno = RetornoApp(message: '', object: null, status: false);
-      if (_validateLoginInput(usuinput)) {
+      if (_validateLoginInput(email, senha)) {
         logando = true;
         retorno =
             await RepositoryUsuarios.entrarUsuario(email.trim(), senha.trim());
@@ -67,17 +67,17 @@ abstract class _LoginStoreBase with Store {
     }
   }
 
-  bool _validateLoginInput(Usuario inputUsuario) {
-    if ((inputUsuario.email.isEmpty || inputUsuario.email == null) &&
-        (inputUsuario.senha.isEmpty || inputUsuario.senha == null)) {
+  bool _validateLoginInput(String email, String senha) {
+    if ((email.isEmpty || email == null) &&
+        (senha.isEmpty || senha == null)) {
       message = MessagesConsts.emailsenhaValidacao;
-    } else if ((inputUsuario.email.isEmpty || inputUsuario.email == null) &&
-        (inputUsuario.senha.isNotEmpty || inputUsuario.senha != null)) {
+    } else if ((email.isEmpty || email == null) &&
+        (senha.isNotEmpty || senha != null)) {
       message = MessagesConsts.emailValidacao;
-    } else if ((inputUsuario.email.isNotEmpty || inputUsuario.email != null) &&
-        (inputUsuario.senha.isEmpty || inputUsuario.senha == null)) {
+    } else if ((email.isNotEmpty || email != null) &&
+        (senha.isEmpty || senha == null)) {
       message = MessagesConsts.senhaValidacao;
-    } else if (!inputUsuario.email.contains('@')) {
+    } else if (!email.contains('@')) {
       message = MessagesConsts.emailInvalido;
     }
     return message.isEmpty;

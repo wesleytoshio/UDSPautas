@@ -22,6 +22,9 @@ class FontStylesConsts {
   static const hintStyleLogin =
       TextStyle(fontFamily: fontGoogle, fontSize: 16, color: Colors.white);
 
+  static const forgotHint =
+      TextStyle(fontFamily: fontGoogle, fontSize: 16, color: Colors.grey);
+
   static const subTitileLogin =
       TextStyle(fontFamily: fontGoogle, fontSize: 26, color: Colors.white);
 
@@ -47,4 +50,16 @@ class FontStylesConsts {
       fontFamily: fontGoogle,
       fontSize: 16,
       color: Colors.blue);
+
+  static const titleSplachScreen = TextStyle(
+      fontFamily: fontGoogle,
+      fontSize: 48,
+      color: Colors.white,
+      fontWeight: FontWeight.bold);
+
+  static const titleSplachScreenBoldUDS = TextStyle(
+      fontFamily: fontGoogle,
+      fontSize: 48,
+      color: Colors.blue,
+      fontWeight: FontWeight.bold);
 }

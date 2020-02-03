@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:pautas_app/consts/font_styles_consts.dart';
 import 'package:pautas_app/store/register_store.dart';
@@ -14,9 +13,6 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   FocusNode focoEmail;
   FocusNode focoSenha;
-  TextEditingController controllerEmail = TextEditingController();
-  TextEditingController controllerSenha = TextEditingController();
-  TextEditingController controllerNome = TextEditingController();
   RegisterStore _registerStore = RegisterStore();
 
   @override
@@ -108,7 +104,6 @@ class _RegisterViewState extends State<RegisterView> {
                               onSubmitted: (value) {
                                 FocusScope.of(context).requestFocus(focoEmail);
                               },
-                              controller: controllerNome,
                               decoration: InputDecoration(
                                 hintText: 'Nome',
                                 hintStyle: FontStylesConsts.hintStyleLogin,
@@ -125,7 +120,6 @@ class _RegisterViewState extends State<RegisterView> {
                               onSubmitted: (value) {
                                 FocusScope.of(context).requestFocus(focoSenha);
                               },
-                              controller: controllerEmail,
                               decoration: InputDecoration(
                                 hintText: 'Email',
                                 hintStyle: FontStylesConsts.hintStyleLogin,
@@ -139,7 +133,6 @@ class _RegisterViewState extends State<RegisterView> {
                               keyboardType: TextInputType.visiblePassword,
                               obscureText: true,
                               focusNode: focoSenha,
-                              controller: controllerSenha,
                               decoration: InputDecoration(
                                 hintText: 'Senha',
                                 hintStyle: FontStylesConsts.hintStyleLogin,
@@ -156,54 +149,40 @@ class _RegisterViewState extends State<RegisterView> {
                                 InkWell(
                                   child: Observer(
                                     builder: (BuildContext context) {
-                                      return AnimatedOpacity(
-                                        duration: Duration(milliseconds: 200),
-                                        opacity:
-                                            _registerStore.exibirBotao ? 1 : 0,
-                                        child: Container(
-                                          height: 75,
-                                          width: 75,
-                                          child: IconButton(
-                                            icon: !_registerStore.registrando
-                                                ? Icon(
-                                                    Icons.arrow_forward,
-                                                    color: Colors.blue,
-                                                  )
-                                                : Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
+                                      return Container(
+                                        height: 75,
+                                        width: 75,
+                                        child: IconButton(
+                                          icon: !_registerStore.registrando
+                                              ? Icon(
+                                                  Icons.arrow_forward,
+                                                  color: Colors.white,
+                                                )
+                                              : Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    valueColor:
+                                                        new AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Colors.white),
                                                   ),
-                                            onPressed: () async {
-                                              if (_registerStore.exibirBotao) {
-                                                await _registerStore
-                                                    .newUsuario();
-                                                if (_registerStore
-                                                    .message.isNotEmpty) {
-                                                  showToast(
-                                                      _registerStore.message,
-                                                      position:
-                                                          ToastPosition.bottom);
-                                                }
-
-                                                when(
-                                                    (_) =>
-                                                        _registerStore
-                                                            .registrado ==
-                                                        true, () {
-                                                  if (Navigator.canPop(
-                                                      context)) {
-                                                    Navigator.pop(context);
-                                                  } else {
-                                                    SystemNavigator.pop();
-                                                  }
-                                                });
-                                              }
-                                            },
-                                          ),
-                                          decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              shape: BoxShape.circle),
+                                                ),
+                                          onPressed: () async {
+                                            await _registerStore.newUsuario();
+                                            if (_registerStore
+                                                .message.isNotEmpty) {
+                                              showToast(_registerStore.message,
+                                                  position:
+                                                      ToastPosition.bottom);
+                                            }
+                                            if (_registerStore.registrado) {
+                                              Navigator.pop(context);
+                                            }
+                                          },
                                         ),
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            shape: BoxShape.circle),
                                       );
                                     },
                                   ),

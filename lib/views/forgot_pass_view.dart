@@ -71,7 +71,7 @@ class ForgotPassView extends StatelessWidget {
                         ),
                         SizedBox(height: 20),
                         Text(
-                          'Digite seu email no campo abaixo, para que possamos enviar sua senha.',
+                          'Digite seu email no campo abaixo, para que possamos redefinir sua senha.',
                           style: FontStylesConsts.hintStyleLogin,
                         ),
                         SizedBox(height: 40),
@@ -97,35 +97,35 @@ class ForgotPassView extends StatelessWidget {
                             InkWell(
                               child: Observer(
                                 builder: (BuildContext context) {
-                                  return AnimatedOpacity(
-                                    duration: Duration(milliseconds: 200),
-                                    opacity:
-                                        _forgotPassStore.showButton ? 1 : 0,
-                                    child: Container(
-                                      height: 75,
-                                      width: 75,
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.arrow_forward,
-                                          color: Colors.black87,
-                                        ),
-                                        onPressed: () async {
-                                          if (_forgotPassStore.showButton) {
-                                            /*await _forgotPassStore.sendEmail();*/
-                                            if (_forgotPassStore
-                                                .message.isNotEmpty) {
-                                              showToast(
-                                                  _forgotPassStore.message,
-                                                  position:
-                                                      ToastPosition.bottom);
-                                            }
-                                          }
-                                        },
-                                      ),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle),
+                                  return Container(
+                                    height: 75,
+                                    width: 75,
+                                    child: IconButton(
+                                      icon: _forgotPassStore.enviando
+                                          ? Center(
+                                              child: CircularProgressIndicator(
+                                                valueColor:
+                                                    new AlwaysStoppedAnimation<
+                                                        Color>(Colors.white),
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.arrow_forward,
+                                              color: Colors.white,
+                                            ),
+                                      onPressed: () async {
+                                        await _forgotPassStore.resetPassword(
+                                            _forgotPassStore.email);
+                                        if (_forgotPassStore
+                                            .message.isNotEmpty) {
+                                          showToast(_forgotPassStore.message,
+                                              position: ToastPosition.bottom);
+                                        }
+                                      },
                                     ),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                        shape: BoxShape.circle),
                                   );
                                 },
                               ),
@@ -133,13 +133,18 @@ class ForgotPassView extends StatelessWidget {
                           ],
                         ),
                         SizedBox(
-                          height: 80,
+                          height: 100,
+                        ),
+                        Text(
+                          'Caso não tenha recebido o emil de redefinição, verifique nos spams ou lixeira, em caso de erro no envio, tente novamente',
+                          style: FontStylesConsts.forgotHint,
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
                   ),
-                ),
-              )
+                ), 
+              ),
             ],
           ),
         ),
