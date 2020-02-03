@@ -2,7 +2,7 @@
 
 App proposto para teste de vaga na empresa UDSSoftware.
 
-##### Apk Android dísponivel na pasta apk
+##### Apk Android dísponivel na pasta apk ou através do link https://drive.google.com/open?id=1lSOcACJPVh8WlrdXWRHbAWwdvVVf_vGs
 
 ### Features
 
