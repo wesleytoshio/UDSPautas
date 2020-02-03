@@ -61,32 +61,36 @@ class ProfileView extends StatelessWidget {
                       SizedBox(
                         height: 100,
                       ),
-                      Center(
-                        child: Container(
-                          height: 75,
-                          width: 75,
-                          child: Tooltip(
-                                                      child: IconButton(
-                              icon: Icon(
-                                Icons.close,
-                                color: Colors.white,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 75,
+                            width: 75,
+                            child: Tooltip(
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.exit_to_app,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () async {
+                                  await _loginStore.logoutApp();
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return LoginView();
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
-                              onPressed: () async {
-                                await _loginStore.logoutApp();
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return LoginView();
-                                    },
-                                  ),
-                                );
-                              },
-                            ), message: 'Sair',
+                              message: 'Sair',
+                            ),
+                            decoration: BoxDecoration(
+                                color: Colors.blue, shape: BoxShape.circle),
                           ),
-                          decoration: BoxDecoration(
-                              color: Colors.blue, shape: BoxShape.circle),
-                        ),
+                        ],
                       ),
                     ],
                   ),

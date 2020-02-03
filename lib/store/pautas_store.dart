@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pautas_app/consts/messages_consts.dart';
 import 'package:pautas_app/models/pauta_model.dart';
@@ -25,6 +28,9 @@ abstract class _PautasStoreBase with Store {
   @observable
   bool salvo = false;
 
+  @observable
+  String autorId = '';
+
   @computed
   bool get showButton =>
       (titulo.isNotEmpty && descricao.isNotEmpty && detalhes.isNotEmpty);
@@ -40,6 +46,9 @@ abstract class _PautasStoreBase with Store {
 
   @observable
   int pageIndex = 0;
+
+  StreamSubscription<QuerySnapshot> subscriptionAbertas;
+  StreamSubscription<QuerySnapshot> subscriptionFechadas;
 
   @computed
   String get ultimoExp => ultimoExpandido;
@@ -67,17 +76,39 @@ abstract class _PautasStoreBase with Store {
   }
 
   @action
-  Future loadPautasFechadas() async {
+  Future loadPautas() async {
+    listPautasAbertas = null;
     listPautasFechadas = null;
-    List<Pauta> list = await RepositoryPautas.getAllPautas('F');
-    listPautasFechadas = list;
+    listPautasAbertas = await RepositoryPautas.getAllPautas('A');
+    listPautasFechadas = await RepositoryPautas.getAllPautas('F');
   }
 
   @action
-  Future loadPautasAbertas() async {
-    listPautasAbertas = null;
-    List<Pauta> list = await RepositoryPautas.getAllPautas('A');
-    listPautasAbertas = list;
+  listenPautas() {
+    if (subscriptionAbertas != null) subscriptionAbertas.cancel();
+    if (subscriptionFechadas != null) subscriptionFechadas.cancel();
+
+    subscriptionAbertas = Firestore.instance
+        .collection('pautas')
+        .where("status", isEqualTo: 'A')
+        .snapshots()
+        .listen((data) {
+          listPautasAbertas = [];
+      data.documents.forEach((f) {
+        listPautasAbertas.add(Pauta.fromMap(f));
+      });
+    });
+
+    subscriptionFechadas = Firestore.instance
+        .collection('pautas')
+        .where("status", isEqualTo: 'F')
+        .snapshots()
+        .listen((data){ 
+          listPautasFechadas = [];
+      data.documents.forEach((f) {
+        listPautasFechadas.add(Pauta.fromMap(f));
+      });
+    });
   }
 
   @action
@@ -88,6 +119,7 @@ abstract class _PautasStoreBase with Store {
           descricao: descricao,
           detalhes: detalhes,
           autorNome: autor,
+          autorId: autorId,
           status: 'A');
       await RepositoryPautas.add(pauta);
       message = MessagesConsts.pautaAdd;
@@ -126,5 +158,10 @@ abstract class _PautasStoreBase with Store {
   @action
   setAutor(String autor) {
     this.autor = autor;
+  }
+
+  @action
+  setAutorId(String autorId) {
+    this.autorId = autorId;
   }
 }

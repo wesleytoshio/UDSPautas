@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:groovin_widgets/groovin_expansion_tile.dart';
 import 'package:pautas_app/consts/font_styles_consts.dart';
 import 'package:pautas_app/models/pauta_model.dart';
+import 'package:pautas_app/store/login_store.dart';
 import 'package:pautas_app/store/pautas_store.dart';
 
 class ItemPauta extends StatefulWidget {
@@ -18,7 +19,7 @@ class ItemPauta extends StatefulWidget {
 
 class _ItemPautaState extends State<ItemPauta> {
   PautasStore _pautasStore = GetIt.I<PautasStore>();
-
+  LoginStore _loginStore = GetIt.I<LoginStore>();
   @override
   Widget build(BuildContext context) {
     Pauta pauta = this.widget.pauta;
@@ -70,27 +71,26 @@ class _ItemPautaState extends State<ItemPauta> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      RaisedButton(
+                      _loginStore.currentUser.uidUsu == pauta.autorId ? RaisedButton(
                         elevation: 0,
                         color: pauta.status == 'A' ? Colors.red : Colors.blue,
                         child: Text(pauta.status == 'A' ? 'Fechar' : 'Reabrir'),
                         onPressed: () {
                           _pautasStore.updateStatus(
                               pauta, pauta.status == 'A' ? 'F' : 'A');
-                          _pautasStore.loadPautasAbertas();
-                          _pautasStore.loadPautasFechadas();
                           _pautasStore.setUltimoExpandido('');
                         },
-                      ),
-                      pauta.status == 'A' ? IconButton(tooltip: 'Deletar Pauta',
-                        icon: Icon(Icons.delete),
-                        onPressed: () {
-                          _pautasStore.deletePauta(pauta);
-                          _pautasStore.loadPautasAbertas();
-                          _pautasStore.loadPautasFechadas();
-                          _pautasStore.setUltimoExpandido('');
-                        },
-                      ): Container()
+                      ): Container(),
+                      _loginStore.currentUser.uidUsu == pauta.autorId
+                          ? IconButton(
+                              tooltip: 'Deletar Pauta',
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                _pautasStore.deletePauta(pauta);
+                                _pautasStore.setUltimoExpandido('');
+                              },
+                            )
+                          : Container()
                     ],
                   ),
                 ],

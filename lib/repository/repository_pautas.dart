@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pautas_app/models/pauta_model.dart';
 
@@ -11,12 +13,11 @@ class RepositoryPautas {
     CollectionReference _collection = Firestore.instance.collection('pautas');
     await _collection.document(documentId).updateData(pauta.toMap());
   }
-  
+
   static Future<void> delete(String documentId) async {
     CollectionReference _collection = Firestore.instance.collection('pautas');
     await _collection.document(documentId).delete();
   }
-      
 
   static Future<Pauta> getPauta(String documentId) async {
     CollectionReference _collection = Firestore.instance.collection('pautas');
@@ -35,5 +36,19 @@ class RepositoryPautas {
       list.add(Pauta.fromMap(f));
     });
     return list;
+  }
+
+  static Future<StreamSubscription<QuerySnapshot>> listenPautas(
+      String status, List<Pauta> lista) async {
+    return Firestore.instance
+        .collection('pautas')
+        .where("status", isEqualTo: status)
+        .snapshots()
+        .listen((data) {
+      data.documents.forEach((f) {
+        lista.add(Pauta.fromMap(f));
+      });
+      return lista;
+    });
   }
 }

@@ -25,6 +25,7 @@ class _AddPautaViewState extends State<AddPautaView> {
     _pautasStore = GetIt.I<PautasStore>();
     _pautasStore.clearPauta();
     _pautasStore.setAutor(_loginStore.currentUser.nome);
+    _pautasStore.setAutorId(_loginStore.currentUser.uidUsu);
     focoDescricao = FocusNode();
     focoDetalhes = FocusNode();
   }
@@ -157,27 +158,34 @@ class _AddPautaViewState extends State<AddPautaView> {
                                         height: 75,
                                         width: 75,
                                         child: IconButton(
-                                          icon: Icon(
-                                            Icons.done,
-                                            color: Colors.white,
-                                          ),
-                                          onPressed: _pautasStore.showButton ? () async {
-                                            await _pautasStore.addPauta();
-                                            if (_pautasStore
-                                                .message.isNotEmpty) {
-                                              showToast(_pautasStore.message,
-                                                  position:
-                                                      ToastPosition.bottom);
-                                            }
-                                            if (_pautasStore.salvo) {
-                                              _pautasStore.loadPautasAbertas();
-                                              _pautasStore.setPageIndex(0);
-                                              Navigator.pop(context, 'Ok');
-                                            }
-                                          }: null
-                                        ),
+                                            icon: Icon(
+                                              Icons.done,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: _pautasStore.showButton
+                                                ? () async {
+                                                    await _pautasStore
+                                                        .addPauta();
+                                                    if (_pautasStore
+                                                        .message.isNotEmpty) {
+                                                      showToast(
+                                                          _pautasStore.message,
+                                                          position:
+                                                              ToastPosition
+                                                                  .bottom);
+                                                    }
+                                                    if (_pautasStore.salvo) {
+                                                      _pautasStore
+                                                          .setPageIndex(0);
+                                                      Navigator.pop(
+                                                          context, 'Ok');
+                                                    }
+                                                  }
+                                                : null),
                                         decoration: BoxDecoration(
-                                            color: _pautasStore.showButton ? Colors.blue: Colors.grey,
+                                            color: _pautasStore.showButton
+                                                ? Colors.blue
+                                                : Colors.grey,
                                             shape: BoxShape.circle),
                                       );
                                     },

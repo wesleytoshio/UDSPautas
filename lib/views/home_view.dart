@@ -26,8 +26,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     _tabController = TabController(length: 2, vsync: this);
     _pageController = PageController();
     _pautasStore = GetIt.I<PautasStore>();
-    _pautasStore.loadPautasAbertas();
-    _pautasStore.loadPautasFechadas();
+    _pautasStore.loadPautas();
+    _pautasStore.listenPautas();
     _pautasStore.setUltimoExpandido('');
   }
 
@@ -72,16 +72,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              Tooltip(
+              /*Tooltip(
                 message: 'Atualizar',
                 child: IconButton(
                   icon: Icon(Icons.refresh),
-                  onPressed: () {
-                    _pautasStore.loadPautasAbertas();
-                    _pautasStore.loadPautasFechadas();
-                  },
+                  onPressed: () {},
                 ),
-              ),
+              ),*/
               Tooltip(
                 message: 'Meu Perfil',
                 child: IconButton(
@@ -115,7 +112,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             _pageController.jumpToPage(0);
             _tabController.animateTo(0);
             _pautasStore.setPageIndex(0);
-  
           }
         },
       ),

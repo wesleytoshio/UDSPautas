@@ -122,6 +122,23 @@ mixin _$PautasStore on _PautasStoreBase, Store {
     }, _$salvoAtom, name: '${_$salvoAtom.name}_set');
   }
 
+  final _$autorIdAtom = Atom(name: '_PautasStoreBase.autorId');
+
+  @override
+  String get autorId {
+    _$autorIdAtom.context.enforceReadPolicy(_$autorIdAtom);
+    _$autorIdAtom.reportObserved();
+    return super.autorId;
+  }
+
+  @override
+  set autorId(String value) {
+    _$autorIdAtom.context.conditionallyRunInAction(() {
+      super.autorId = value;
+      _$autorIdAtom.reportChanged();
+    }, _$autorIdAtom, name: '${_$autorIdAtom.name}_set');
+  }
+
   final _$listPautasAbertasAtom =
       Atom(name: '_PautasStoreBase.listPautasAbertas');
 
@@ -208,19 +225,11 @@ mixin _$PautasStore on _PautasStoreBase, Store {
     return _$deletePautaAsyncAction.run(() => super.deletePauta(pauta));
   }
 
-  final _$loadPautasFechadasAsyncAction = AsyncAction('loadPautasFechadas');
+  final _$loadPautasAsyncAction = AsyncAction('loadPautas');
 
   @override
-  Future<dynamic> loadPautasFechadas() {
-    return _$loadPautasFechadasAsyncAction
-        .run(() => super.loadPautasFechadas());
-  }
-
-  final _$loadPautasAbertasAsyncAction = AsyncAction('loadPautasAbertas');
-
-  @override
-  Future<dynamic> loadPautasAbertas() {
-    return _$loadPautasAbertasAsyncAction.run(() => super.loadPautasAbertas());
+  Future<dynamic> loadPautas() {
+    return _$loadPautasAsyncAction.run(() => super.loadPautas());
   }
 
   final _$addPautaAsyncAction = AsyncAction('addPauta');
@@ -248,6 +257,16 @@ mixin _$PautasStore on _PautasStoreBase, Store {
     final _$actionInfo = _$_PautasStoreBaseActionController.startAction();
     try {
       return super.setPageIndex(value);
+    } finally {
+      _$_PautasStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic listenPautas() {
+    final _$actionInfo = _$_PautasStoreBaseActionController.startAction();
+    try {
+      return super.listenPautas();
     } finally {
       _$_PautasStoreBaseActionController.endAction(_$actionInfo);
     }
@@ -298,6 +317,16 @@ mixin _$PautasStore on _PautasStoreBase, Store {
     final _$actionInfo = _$_PautasStoreBaseActionController.startAction();
     try {
       return super.setAutor(autor);
+    } finally {
+      _$_PautasStoreBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setAutorId(String autorId) {
+    final _$actionInfo = _$_PautasStoreBaseActionController.startAction();
+    try {
+      return super.setAutorId(autorId);
     } finally {
       _$_PautasStoreBaseActionController.endAction(_$actionInfo);
     }

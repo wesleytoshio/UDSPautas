@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pautas_app/consts/font_styles_consts.dart';
+import 'package:pautas_app/models/pauta_model.dart';
 import 'package:pautas_app/store/pautas_store.dart';
 import 'package:pautas_app/widgets/item_pauta_widget.dart';
 
@@ -9,11 +10,12 @@ class ListPautas extends StatelessWidget {
   const ListPautas({Key key, this.index, this.list}) : super(key: key);
 
   final int index;
-  final list;
+  final List<Pauta> list;
 
   @override
   Widget build(BuildContext context) {
     PautasStore _pautasStore = GetIt.I<PautasStore>();
+    //List<Pauta> list = index == 0 ? _pautasStore.listPautasAbertas : _pautasStore.listPautasFechadas; 
     if (list != null) {
       if (list.length != 0) {
         return Observer(
