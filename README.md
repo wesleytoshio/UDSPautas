@@ -18,17 +18,17 @@ App proposto para teste de vaga na empresa UDSSoftware.
 
 # Screenshots
 
-![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/1.png?token=AFSVQRGQ7D4H2DVJ7LRKMB26HAYWS)
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/1.png?token=AFSVQRG532IRQLLYKCHWTYS6HA2FQ)
 
-![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/2.png?token=AFSVQRGZABDBOGVEB3IC6SK6HAY22)
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/2.png?token=AFSVQRDL7TD4LVC5YLL77KK6HA2I6)
 
-![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/3.png?token=AFSVQRHLMIGUYC2DJLCNWCK6HAY6K)
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/3.png?token=AFSVQRC5N3XUDKL6GRLIJVS6HA2KI)
 
-![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/4.png?token=AFSVQRE3KI5COMOCSHGIYBK6HAZBQ)
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/4.png?token=AFSVQREJ6N7EUVIXLQQO2MS6HA2NE)
 
-![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/5.png?token=AFSVQRF2T2ZDBMT63MIHWSK6HAZJS)
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/5.png?token=AFSVQRGOOA2B4V7PYCPXI4K6HA2OO)
 
-![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/6.png?token=AFSVQRA7FG7MKYCFXLYPYM26HAZKY)
+![](https://raw.githubusercontent.com/RenatoLucasMota/UDSPautas/master/screenshots/6.png?token=AFSVQRBCEH4HLFUGMQQDCNK6HA2PW)
 
 
 
