@@ -136,7 +136,7 @@ class ForgotPassView extends StatelessWidget {
                           height: 100,
                         ),
                         Text(
-                          'Caso não tenha recebido o emil de redefinição, verifique nos spams ou lixeira, em caso de erro no envio, tente novamente',
+                          'Caso não tenha recebido o email de redefinição, verifique nos spams ou lixeira, em caso de erro no envio, tente novamente',
                           style: FontStylesConsts.forgotHint,
                           textAlign: TextAlign.center,
                         ),
